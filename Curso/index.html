@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html ng-app="my-app" ng-controller="AppController as app">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{{app.titulo}}</title>
+    <meta charset="utf-8" />
+    <link href="css/mi-estilo.css" rel="stylesheet" />
+</head>
+<body>
+    <p>
+        <input type="button" ng-repeat="m in app.menu"
+               value="{{m.texto}}" ng-click="app.seleciona($index)">
+    </p>
+    <div ng-controller="NotificationController as vm">
+        <div ng-if="vm.notify.hayMensajes">
+            <ul>
+                <li ng-repeat="item in vm.notify.listado">
+                    {{item | initcap}}
+                    <input type="button" value="X"
+                           ng-click="vm.notify.remove($index)">
+                </li>
+            </ul>
+            <p>
+                <input type="button" value="Cerra"
+                       ng-click="vm.notify.clear()">
+            </p>
+        </div>
+    </div>
+
+    <ng-include src="app.plantilla"></ng-include>
+
+
+
+    <script type="text/ng-template" id="demo0.html">
+        <div ng-controller="my-controller as vm">
+            <h1>Hola {{vm.nombre | uppercase}}</h1>
+            <p>
+                <input type="text" ng-model="vm.nombre">
+                <input type="button" value="saluda" ng-click="vm.saluda()">
+                <input type="button" value="despide" ng-click="vm.despide()">
+                <input type="button" value="Di algo" ng-click="vm.di('algo')">
+                <input type="button" value="cambia" ng-click="vm.cambia()">
+                <input type="button" value="Notifica" ng-click="vm.notify.add('Esto es una demo.')">
+                <input type="button" value="Borra" ng-click="vm.notify.remove(0)">
+            </p>
+            <p ng-bind="vm.resultado">Esto se pierde</p>
+            <!--<p ng-bind-html="vm.resultado">Esto se pierde</p>-->
+            <p>Persona: {{vm.persona.nombre}} {{vm.persona.apellidos}}</p>
+
+            <p ng-show="vm.visible">Ahora me ves</p>
+            <p ng-if="vm.visible">Ahora existo</p>
+            <p ng-class="vm.estetica">Texto con estilo</p>
+            <p>Calcula: 2 + 2 = {{2+2}} = {{vm.calcula(2,2) | currency}}</p>
+
+            <ul>
+                <li ng-repeat="item in vm.listado | limitTo:-5"
+                    style="background-color:{{$even?'blue':'yellow'}}">
+                    {{item.nombre | initcap}} ({{item.id}}),
+                    elemento {{$index + 1}} de {{vm.listado.length}}
+                </li>
+            </ul>
+            <p>
+                <select ng-model="vm.idProvincia"
+                        ng-options="p.id as p.nombre for p in vm.listado | orderBy:'nombre'">
+                    <option value="">--Elige opcion--</option>
+                </select>
+                Seleccionado: {{vm.idProvincia}}
+                <input type="button" value="Añade Sevilla" ng-click="vm.add('sevilla')">
+                <input type="button" value="Añade A Coruña" ng-click="vm.add('a coruña')">
+            </p>
+            {{vm.listado | json}}
+        </div>
+    </script>
+    <!-- Framework de terceros -->
+    <script src="scripts/angular/angular.js"></script>
+    <script src="scripts/angular/i18n/angular-locale_es-es.js"></script>
+
+    <!-- Código Propio -->
+    <script src="js/aytos-core.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/calculadora.js"></script>
+    <script src="scripts/angular/angular.js"></script>
+    <script src="js/personas.js"></script>
+</body>
+</html>
