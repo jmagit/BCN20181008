@@ -7,12 +7,20 @@
     <link href="css/mi-estilo.css" rel="stylesheet" />
 </head>
 <body>
-    <p>
+    <!--<p>
         <input type="button" ng-repeat="m in app.menu"
                value="{{m.texto}}" ng-click="app.seleciona($index)">
+    </p>-->
+
+    <p>
+        <a href="#!/">demos</a>&nbsp;|&nbsp;
+        <a href="#!/chisme/de/calcular">calculadora</a>&nbsp;|&nbsp;
+        <a href="#!/otra/calculadora">calculator</a>&nbsp;|&nbsp;
+        <a href="#!/personas">personas</a>&nbsp;|&nbsp;
+        <a href="#!/falsa">Falsa</a>&nbsp;|&nbsp;
     </p>
     <div ng-controller="NotificationController as vm">
-        <div ng-if="vm.notify.hayMensajes">
+        <div class="notificaciones" ng-if="vm.notify.hayMensajes">
             <ul>
                 <li ng-repeat="item in vm.notify.listado">
                     {{item | initcap}}
@@ -27,9 +35,9 @@
         </div>
     </div>
 
-    <ng-include src="app.plantilla"></ng-include>
+    <!--<ng-include src="app.plantilla"></ng-include>-->
 
-
+    <div ng-view></div>
 
     <script type="text/ng-template" id="demo0.html">
         <div ng-controller="my-controller as vm">
@@ -44,7 +52,7 @@
                 <input type="button" value="Borra" ng-click="vm.notify.remove(0)">
             </p>
             <p ng-bind="vm.resultado">Esto se pierde</p>
-            <!--<p ng-bind-html="vm.resultado">Esto se pierde</p>-->
+            <p ng-bind-html="vm.resultado">Esto se pierde</p>
             <p>Persona: {{vm.persona.nombre}} {{vm.persona.apellidos}}</p>
 
             <p ng-show="vm.visible">Ahora me ves</p>
@@ -74,6 +82,8 @@
     <!-- Framework de terceros -->
     <script src="scripts/angular/angular.js"></script>
     <script src="scripts/angular/i18n/angular-locale_es-es.js"></script>
+    <script src="scripts/angular/angular-route.js"></script>
+    <script src="scripts/angular/angular-sanitize.js"></script>
 
     <!-- Código Propio -->
     <script src="js/aytos-core.js"></script>

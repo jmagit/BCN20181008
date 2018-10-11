@@ -10,6 +10,12 @@
     font-style: italic;
 }
 
+.notificaciones {
+  border: 1px solid red;
+  border-radius: 5px;
+  background-color: yellow;
+}
+
 /* Calculadora *****************************************************/
 .Calculadora {
 	background-color: #e6f3ff;

@@ -22,14 +22,15 @@
 
 angular.module('my-app').controller('PersonasController',
     ['NotificationService', '$window', 'PersonasDAO',
-        function (notify, $window, dao) {
+        '$route', '$routeParams', '$location',
+        function (notify, $window, dao, $route, $routeParams, $location) {
             var vm = this;
 
             vm.modo = 'list';
             vm.listado = null;
             vm.elemento = {};
             var idOriginal = null;
-            var pk = 'id';
+            var urlList = '/personas';
 
             vm.list = function () {
                 dao.query().then(
@@ -48,55 +49,67 @@ angular.module('my-app').controller('PersonasController',
                 vm.modo = 'add';
             };
             vm.edit = function (key) {
-                var rslt = vm.listado.find(function (item) { return item[pk] == key; });
-                if (rslt) {
-                    vm.elemento = angular.copy(rslt);
-                    idOriginal = key;
-                    vm.modo = 'edit';
-                } else {
-                    notify.add('Elemento no encontrado.');
-                }
+                dao.get(key).then(
+                    function (resp) {
+                        vm.elemento = resp.data;
+                        idOriginal = key;
+                        vm.modo = 'edit';
+                    },
+                    function (err) {
+                        notify.add(err.statusText);
+                    }
+                    );
             };
             vm.view = function (key) {
-                var rslt = vm.listado.find(function (item) { return item[pk] == key; });
-                if (rslt) {
-                    vm.elemento = angular.copy(rslt);
-                    vm.modo = 'view';
-                } else {
-                    notify.add('Elemento no encontrado.');
-                }
+                dao.get(key).then(
+                    function (resp) {
+                        vm.elemento = resp.data;
+                        vm.modo = 'view';
+                    },
+                    function (err) {
+                        notify.add(err.statusText);
+                    }
+                    );
             };
             vm.delete = function (key) {
                 if (!$window.confirm('¿Seguro?')) return;
-                var index = vm.listado.findIndex(function (item) { return item[pk] == key; });
-                if (index >= 0) {
-                    vm.listado.splice(index, 1);
-                    vm.list();
-                } else {
-                    notify.add('Elemento no encontrado.');
-                }
+                dao.remove(key).then(
+                    function (resp) {
+                        vm.list();
+                    },
+                    function (err) {
+                        notify.add(err.statusText);
+                    }
+                    );
             };
 
             vm.cancel = function () {
                 vm.elemento = {};
                 idOriginal = null;
-                vm.list();
+                // vm.list();
+                $location.url(urlList);
             };
             vm.send = function () {
                 switch (vm.modo) {
                     case 'add':
-                        vm.listado.push(vm.elemento);
-                        vm.cancel();
+                        dao.add(vm.elemento).then(
+                            function (resp) {
+                                vm.cancel();
+                            },
+                            function (err) {
+                                notify.add(err.statusText);
+                            }
+                            );
                         break;
                     case 'edit':
-                        var index = vm.listado.findIndex(function (item) { return item[pk] == idOriginal; });
-                        if (index >= 0) {
-                            vm.listado[index] = vm.elemento;
-                            vm.list();
-                        } else {
-                            notify.add('Elemento no encontrado.');
-                        }
-                        vm.cancel();
+                        dao.change(idOriginal, vm.elemento).then(
+                            function (resp) {
+                                vm.cancel();
+                            },
+                            function (err) {
+                                notify.add(err.statusText);
+                            }
+                            );
                         break;
                     case 'view':
                         vm.cancel();
@@ -104,7 +117,19 @@ angular.module('my-app').controller('PersonasController',
                 }
             };
 
-            vm.list();
+            if ($routeParams.id) {
+                if ($location.url().endsWith('/edit')) {
+                    vm.edit($routeParams.id);
+                } else {
+                    vm.view($routeParams.id);
+                }
+            } else {
+                if ($location.url().endsWith('/add')) {
+                    vm.add();
+                } else {
+                    vm.list();
+                }
+            }
         }]);
 angular.module('my-app').controller('PersonasSinDAOController',
     ['NotificationService', '$window', function (notify, $window) {

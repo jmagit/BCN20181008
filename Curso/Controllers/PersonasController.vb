@@ -1,9 +1,4 @@
-﻿Imports System.Data
-Imports System.Data.Entity
-Imports System.Data.Entity.Infrastructure
-Imports System.Linq
-Imports System.Net
-Imports System.Net.Http
+﻿Imports System.Net
 Imports System.Web.Http
 Imports System.Web.Http.Description
 Imports Curso.Models

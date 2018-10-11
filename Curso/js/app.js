@@ -1,13 +1,44 @@
-﻿angular.module('my-app', ['aytos-core']);
+﻿angular.module('my-app', ['aytos-core', 'ngSanitize', 'ngRoute']);
+angular.module('my-app').config(
+    ['$routeProvider', function ($routeProvider) {
+    $routeProvider
+      .when('/', {
+          templateUrl: 'demo0.html'
+      })
+      .when('/chisme/de/calcular', {
+          templateUrl: 'views/calculadora.html', controller: 'CalculadoraCtrl', controllerAs: 'ctrl'
+      })
+      .when('/otra/calculadora', {
+          templateUrl: 'views/calculadora.en.html', controller: 'CalculadoraCtrl', controllerAs: 'ctrl'
+      })
+      .when('/personas', {
+          templateUrl: 'views/personas/list.html', controller: 'PersonasController', controllerAs: 'vm'
+      })
+      .when('/personas/add', {
+          templateUrl: 'views/personas/form.html', controller: 'PersonasController', controllerAs: 'vm'
+      })
+      .when('/personas/:id/edit', {
+          templateUrl: 'views/personas/form.html', controller: 'PersonasController', controllerAs: 'vm'
+      })
+      .when('/personas/:id', {
+          templateUrl: 'views/personas/view.html', controller: 'PersonasController', controllerAs: 'vm'
+      })
+      .when('/personas/:id/:kk*', {
+          templateUrl: 'views/personas/view.html', controller: 'PersonasController', controllerAs: 'vm'
+      })
+      .otherwise({
+          redirectTo: '/'
+      });
+}])
 
 angular.module('my-app').controller('AppController', [function () {
     var vm = this;
     vm.menu = [
-        { texto: 'Personas', titulo: 'Mantenimiento de personas', plantilla: 'views/personas.html' },
         { texto: 'Demos', titulo: 'Demos de plantillas', plantilla: 'demo0.html' },
         { texto: 'Pag 1', titulo: 'Demo plantilla 1', plantilla: 'views/demo1.html' },
-        { texto: 'Pag 2', titulo: 'Otra página', plantilla: 'views/demo2.html' },
+        { texto: 'Pag 2', titulo: 'Otra página', plantilla: 'cdemo2.html' },
         { texto: 'Calculadora', titulo: 'Calculadora', plantilla: 'views/calculadora.en.html' },
+        { texto: 'Personas', titulo: 'Mantenimiento de personas', plantilla: 'views/personas.html' },
     ];
     vm.titulo = vm.menu[0].titulo;
     vm.plantilla = vm.menu[0].plantilla;
